@@ -1,0 +1,31 @@
+{% extends "auctions/layout.html" %}
+{% load widget_tweaks %}
+
+{% block watchcount %}
+    <span class="badge badge-secondary">{{ count }}</span>
+{% endblock %}
+
+{% block body %}
+    <h2>Create a Listing</h2>
+    <hr>
+    <form action="{% url 'create' %}" method="post">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+            <div class=" container form-group">
+            {{ field.label_tag }}
+            {% render_field field class="form-control" %}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <div class="container">
+            <button class="btn btn-primary" type="submit">Save Listing</button>
+        </div>
+        
+        
+        
+    </form>
+    
+    
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "auctions/layout.html" %}
+{% load widget_tweaks %}
+
+{% block watchcount %}
+    <span class="badge badge-secondary">{{ count }}</span>
+{% endblock %}
+
+{% block body %}
+    <h2>Listing</h2>
+    <hr>
+    <div class='m-4'>
+        <img  class="mx-auto d-block"  src="{{ listing.image }}" height=180px></img> 
+        <div class="row">
+        <div class="col-sm-9 mt-5">
+            <ul type="none">
+                <li><h4>Name: {{ listing.name }}</h4></li>
+                <li>Description: {{ listing.description }}</li>
+                <li>Category: {{ listing.category }}</li>
+                <li>Starting Price: ${{ listing.start_bid }}</li>
+                {% if listing.status != 'sold' %}
+                <li><strong>Now Bidding at ${{ listing.top_bid }}</strong></li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="col-sm-3 mt-5">
+          {% if is_w_user %}
+            <a href="{% url 'watchlist' listing.id %}"><button type="button" class="btn btn-outline-success">Add to Watchlist</button></a>
+          {% else %}
+            <a href="{% url 'watchlist' listing.id %}">
+                <span class="glyphicon glyphicon-square-empty-check"><button type="button" class="btn btn-outline-success">Added to Watchlist</button></a>
+          {% endif %}
+        </div>
+        </div>
+        <hr>
+    
+    <hr>
+<!--THE BIDDING RESULT STATUS-->
+    {% if auction_result %}
+        {% if user == winner.bidder %}
+            <div class="alert alert-success" role="alert">
+                Congratulations! you have the won this auction item for {{ winner.user_bid }}
+            </div> 
+        {% else %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Sorry, The Item has already been sold to {{ winner.bidder }} for {{ winner.user_bid }}
+            </div> 
+        {% endif %}
+    {% endif %}
+<!--THE BIDDING CONTROL-->
+    {% if listing.status != 'sold' %}
+        <h3>BIDDING</h3>
+        {% if bid_error %}
+        <div class="alert alert-warning" role="alert">
+            The bid is less than the previous bid
+        </div>
+        {% endif %}
+        <p>This item has {{ bids }} bids as of now.</p>
+        <form method="post" style="margin-top: 1.3em;">
+          
+          {% csrf_token %}
+          {{ bid_form }}
+          <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+        </form>
+        {% if stop_auction %}
+            <a href="{% url 'stop_auction' listing.id %}"><h2>Auction</h2></a>   
+        {% endif %}
+        
+    {% endif %}
+
+    
+<!--THE COMMENT SECTION-->
+  <div class = "card shadow pl-3 pt-2">  
+    <h4>Comments</h4>    
+    {% for comment in comments %}
+        <div class="comments" style="padding: 10px;">
+          <p class="font-weight-bold">
+            {{ comment.name }}
+            <span class=" text-muted font-weight-normal">
+              {{ comment.created_on }}
+            </span>
+          </p>
+          {{ comment.body | linebreaks }}
+        </div>
+    {% endfor %}
+    <div class="col-md-8 card mb-4  mt-3 shadow ">
+      <div class="card-body">
+        <h4>Leave a comment</h4>
+        <form method="post" style="margin-top: 1.3em;">
+          
+          {% for field in comment_form %}
+            <div class=" container form-group">
+            {{ field.label_tag }}
+            {% render_field field class="form-control" %}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+          {% endfor %}
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+

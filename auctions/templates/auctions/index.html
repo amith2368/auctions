@@ -1,0 +1,31 @@
+{% extends "auctions/layout.html" %}
+
+{% block watchcount %}
+    <span class="badge badge-secondary">{{ count }}</span>
+{% endblock %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    <hr>
+    {% for listing in listings %}
+    <div class = "card shadow m-4">   
+        <div class="card-body">
+            <div class = "row">
+                <div class=" container col-sm-3">
+                    <img class="mx-auto d-block" src="{{ listing.image }}" height=180px></img> 
+                </div>
+                <div class="col-sm-9">
+                    <ul type="none">
+                        <li><a href="{% url 'view' listing.id %}"><h4>Name: {{ listing.name }}</h4></a></li>
+                        <li>Description: {{ listing.description }}</li>
+                        <li>Category: {{ listing.category }}</li>
+                        <li>Starting Price: ${{ listing.start_bid }}</li>
+                    </ul>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+    {% endfor %}    
+    
+{% endblock %}
