@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+
+{% block watchcount %}
+    <span class="badge badge-secondary">{{ count }}</span>
+{% endblock %}
+
+{% block body %}
+    <h2>Categories</h2>
+    <hr>
+    {% for category in categories %}
+        <div class="container text-center" >
+            <ul type="none">
+                <l1><a href="{% url 'category' category.id %}"><h4>{{ category.category_type }}</h4></a></l1>
+            </ul>   
+        </div>
+    {% endfor %}    
+    
+{% endblock %}

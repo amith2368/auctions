@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>{{category_name}}</h2>
     <hr>
     {% for listing in listings %}
     <div class = "card shadow m-4">   
@@ -19,7 +19,7 @@
                         <li><a href="{% url 'view' listing.id %}"><h4>Name: {{ listing.name }}</h4></a></li>
                         <li>Description: {{ listing.description }}</li>
                         <li>Category: {{ listing.category }}</li>
-                        <li>Now bidding at: <strong>${{ listing.top_bid }}</strong></li>
+                        <li>Starting Price: ${{ listing.start_bid }}</li>
                     </ul>
                 </div>
                 <hr>

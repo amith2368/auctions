@@ -8,7 +8,7 @@ from django import forms
 from django.contrib import messages
 from django.db.models import Max
 
-from .models import User, Listing, CommentSection, Bid, Auction
+from .models import User, Listing, CommentSection, Bid, Auction, Category
 
 # Forms for the website 
 
@@ -32,16 +32,35 @@ class BidForm(forms.ModelForm):
 
 
 def watchcount(request):
+    
     w_user = request.user
     count = Listing.objects.filter(wl = w_user).count()
     return count
 
 
 def index(request):
-    return render(request, "auctions/index.html", {
-        "listings": Listing.objects.exclude(status = "inactive").all(),
-        "count": watchcount(request),
-    })
+    if request.user.is_authenticated:
+        return render(request, "auctions/index.html", {
+            "listings": Listing.objects.exclude(status = "sold").exclude(status = "inactive").all(),
+            "count": watchcount(request),
+        })
+    else:
+        return render(request, "auctions/index.html", {
+            "listings": Listing.objects.exclude(status = "inactive").all(),
+            
+        })
+
+def categories(request):
+    return render(request, "auctions/categories.html", {
+            "categories": Category.objects.all(),    
+        })
+
+def view_category(request, category_type):
+    return render(request, "auctions/category.html", {
+            "listings": Listing.objects.filter(category = category_type).all(),
+            "category_name": Category.objects.get(pk = category_type),
+            })
+    
 
 
 def login_view(request):
